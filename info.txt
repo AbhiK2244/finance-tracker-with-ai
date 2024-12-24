@@ -1,0 +1,102 @@
+(auth) folder wrapped inside parenthesis will be ignored by nextjs
+
+[[...signin]] - this folder is catch-all-route folder
+    Used for dynamic routing
+    Basically it is used to hide the messy endpoints given by the clerk
+
+    The main use case for [[...folder_name]] in Next.js is to create flexible, dynamic routes that can
+     handle variable path segments, including when no segments are present. This is particularly useful
+      for applications where the number or presence of path segments is unpredictable.
+
+
+- folder name: _components 
+- folder name starting from '_'. NextJs ignore everything inside the folder including folder itself. It will not it as a route.
+
+
+- in clerk how to customize the button:
+<UserButton appearance={{
+              elements: {
+                avatarBox: "w-10 h-10"
+              }
+}} />
+
+- Suspense:
+The Suspense component in your code is a feature provided by React that is used to handle asynchronous 
+rendering. It allows you to specify a fallback UI (like a spinner or loader) that will be displayed 
+while a component is being loaded or waiting for asynchronous data.
+
+- Supabase:
+    Database password: pgomsxppWhw0bvye
+
+- Prisma:
+commands:
+to install:
+npm i -D prisma --legacy-peer-deps
+
+install prima client:
+npm i @prisma/client --legacy-peer-deps
+
+to initialise:
+npx prisma init
+
+push to supabase:
+npx prisma migrate dev --name create-models
+
+create a prisma.js inside lib folder to initialise the prisma client to make calls to the databases.
+
+In the Prisma schema, the "?" after a data type in the model fields indicates that the field is optional.
+
+Advantages of Prisma:
+Type Safety: Eliminates common runtime errors by catching issues during development.
+Rapid Development: Simplifies database interactions with an easy-to-use API.
+Database Agnostic: You can switch between supported databases with minimal effort.
+Real-Time Feedback: IDE integrations provide real-time feedback and autocomplete.
+
+
+- Arcjet:
+Key Features of Arcjet:
+Bot Detection and Protection: Identifies and blocks automated clients to safeguard your application from malicious bots. 
+Rate Limiting: Controls the number of requests a client can make within a specified timeframe, preventing abuse and ensuring fair usage.
+Email Validation and Verification: Checks the validity of email addresses to ensure that only legitimate users can register or interact with your application. 
+Attack Protection: Provides defenses against common web attacks, enhancing the overall security posture of your application. 
+
+- Innjest:
+to run:
+npm inngest-cli@latest dev
+
+The main use of Inngest is to help developers create, manage, and run event-driven, serverless 
+workflows that are reliable, scalable, and easy to implement. It is designed to handle complex 
+workflows that can include long-running tasks, parallel executions, retries, and event-driven 
+triggers, all without requiring developers to manage backend infrastructure or state manually.
+
+- Cron Jobs:
+A cron job is a scheduled task that runs automatically at specified intervals or times. It is a 
+feature provided by Unix-like operating systems and some other platforms to automate repetitive 
+tasks, such as backups, maintenance scripts, or data processing.
+
+
+- Libraries used to creat account:
+to install:
+npm i react-hook-form zod @hookform/resolvers
+
+what they do:
+react-hook-form: Manages the form's state and interactions.
+zod: Defines and validates the form schema.
+@hookform/resolvers: Connects zod (or another schema library) with react-hook-form for seamless 
+validation.
+
+
+- why serialization is needed in action/dashboard.js?
+Serialization in this Next.js code is needed because some data types used in the database 
+(like Prisma's Decimal) are not directly serializable to JSON. JavaScript's JSON.stringify() 
+does not natively support these types, which can result in errors when sending the data to the 
+frontend or the client-side.
+The JavaScript engine in the browser does not understand non-standard data types like Prisma's Decimal.
+
+
+
+- A way to create a object with the help of .reduce method of array.
+export const categoryColors = defaultCategories.reduce((acc, category) => {
+    acc[category.id] = category.color;
+    return acc;
+}, {});
