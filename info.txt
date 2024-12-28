@@ -132,3 +132,22 @@ scenarios involving multiple interdependent operations.
     ["c", 3]
     ]
 
+
+
+
+- React Email   
+    The React Email library is a framework for building emails using React components, 
+    allowing developers to create and style emails using React's declarative syntax. 
+    It abstracts away the complexity of HTML email development while ensuring compatibility 
+    with major email clients.
+
+
+- Resend email service
+    Resend is a modern email service designed for sending transactional emails with a 
+    developer-friendly API. It integrates well with React Email for sending styled emails.
+
+
+- In Zod, SuperRefine()
+    In Zod, the superRefine method allows you to add custom validation logic that cannot 
+    be expressed with the standard Zod schema methods. This is particularly useful for 
+    validating relationships between multiple fields in the schema.
