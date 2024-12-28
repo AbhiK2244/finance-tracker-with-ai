@@ -151,3 +151,8 @@ scenarios involving multiple interdependent operations.
     In Zod, the superRefine method allows you to add custom validation logic that cannot 
     be expressed with the standard Zod schema methods. This is particularly useful for 
     validating relationships between multiple fields in the schema.
+
+
+- AI Scanner
+    install 
+    npm i @google/generative-ai --legacy-peer-deps
