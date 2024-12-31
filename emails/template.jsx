@@ -76,7 +76,7 @@ export default function EmailTemplate({
                 )}
     
                 <Text style={styles.footer}>
-                  Thank you for using Welth. Keep tracking your finances for better
+                  Thank you. Keep tracking your finances for better
                   financial health!
                 </Text>
               </Container>
