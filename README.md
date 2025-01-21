@@ -41,4 +41,21 @@ npm i
 ```bash
 npm run dev
 ```
+### Step 4: Create .env file and Add these variable with you own keys
+
+***Clerk configuration***
+- **NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY**=xxxxxxxxxxxxxxxxxxx
+- **CLERK_SECRET_KEY**=xxxxxxxxxxxxxxxxxxxxxxxx
+- **NEXT_PUBLIC_CLERK_SIGN_IN_URL**=sign-in
+- **NEXT_PUBLIC_CLERK_SIGN_UP_URL**=sign-up
+
+***Supabase connection pooling via Supavisor***
+- **DATABASE_URL**=postgresql://user:password@db.example.supabase.co:5432/database_name
+
+***Direct database connection (used for migrations)***
+- **DIRECT_URL**=postgresql://user:password@db.example.supabase.co:5432/database_name
+
+- **RESEND_API_KEY**=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+- **GEMINI_API_KEY**=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 
