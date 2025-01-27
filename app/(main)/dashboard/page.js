@@ -24,7 +24,13 @@ const DashboardPage = async () => {
     budgetData = await getCurrentBudget(defaultAccount.id);
   }
 
-  const transactions = await getDashboardData();
+  try{
+    const transactions = await getDashboardData();
+  }
+  catch(err)
+  {
+    console.log("Dashboard get transactions Error: ", err)
+  }
 
   return (
     <div className="space-y-8">
