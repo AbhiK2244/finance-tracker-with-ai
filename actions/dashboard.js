@@ -102,28 +102,37 @@ export async function getUserAccounts() {
 
     return serializedAccounts;
   } catch (error) {
-    throw new Error(error.message);
-    // console.log(error.message)
+    // throw new Error(error.message);
+    console.log(error.message)
+    return [];
   }
 }
 
 export async function getDashboardData() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try{
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+    
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  if (!user) {
-    throw new Error("User not found");
+    // Get all user transactions
+    const transactions = await db.transaction.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "desc" },
+    });
+    
+    return transactions.map(serializeTransaction);
   }
-
-  // Get all user transactions
-  const transactions = await db.transaction.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "desc" },
-  });
-
-  return transactions.map(serializeTransaction);
+  catch(error)
+  {
+    console.log(error.message)
+    return [];
+  }
 }
