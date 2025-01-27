@@ -39,7 +39,7 @@ const Header = async () => {
 
           <SignedOut>
             {/* forceRedirectUrl will redirect to /dashboard after the login is completed */}
-            <SignInButton >
+            <SignInButton forceRedirectUrl="/dashboard">
               <Button variant="outline">Login</Button>
             </SignInButton>
           </SignedOut>
