@@ -9,13 +9,7 @@ import BudgetProgress from "./_components/BudgetProgress";
 import DashboardOverview from "./_components/DashboardOverview";
 
 const DashboardPage = async () => {
-  try{
-    const accounts = await getUserAccounts();
-  }
-  catch(err)
-  {
-    console.log("Dashboard getAccounts Error: ", err)
-  }
+  const accounts = await getUserAccounts();
 
   const defaultAccount = accounts?.find((account) => account.isDefault);
   let budgetData = null;
@@ -24,13 +18,7 @@ const DashboardPage = async () => {
     budgetData = await getCurrentBudget(defaultAccount.id);
   }
 
-  try{
-    const transactions = await getDashboardData();
-  }
-  catch(err)
-  {
-    console.log("Dashboard get transactions Error: ", err)
-  }
+  const transactions = await getDashboardData();
 
   return (
     <div className="space-y-8">
