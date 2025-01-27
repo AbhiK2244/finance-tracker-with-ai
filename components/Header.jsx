@@ -16,7 +16,7 @@ const Header = async () => {
             alt="logo"
             width={200}
             height={60}
-            className="h-12 w-auto object-contain"
+            className="h-12 w-auto object-contain ml-8"
           />
         </Link>
 
