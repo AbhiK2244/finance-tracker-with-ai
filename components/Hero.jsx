@@ -1,68 +1,90 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const HeroSection = () => {
-  const imageRef = useRef(null);
+  const heroRef = useRef(null);
+  const cursorRef = useRef(null);
+  const [showCursor, setShowCursor] = useState(false);
+
+  const currentPos = useRef({ x: 0, y: 0 });
+  const targetPos = useRef({ x: 0, y: 0 });
+  const animationFrameId = useRef();
 
   useEffect(() => {
-    const imageElement = imageRef.current;
+    const cursorElement = cursorRef.current;
+    const heroElement = heroRef.current;
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-    //   console.log("askdjfhkasjdf",scrollPosition)
-      const scrollThreshold = 100;
-
-      if (scrollPosition > scrollThreshold) {
-        imageElement.classList.add("scrolled");
-      } else {
-        imageElement.classList.remove("scrolled");
-      }
+    const handleMouseMove = (movement) => {
+      const rect = heroElement.getBoundingClientRect();
+      targetPos.current = {
+        x: movement.clientX - rect.left,
+        y: movement.clientY - rect.top,
+      };
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (heroElement) {
+      heroElement.addEventListener("mousemove", handleMouseMove);
+    }
+
+    const animateCursor = () => {
+      const lerpFactor = 0.1;
+
+      const dx = targetPos.current.x - currentPos.current.x;
+      const dy = targetPos.current.y - currentPos.current.y;
+
+      currentPos.current.x += dx * lerpFactor;
+      currentPos.current.y += dy * lerpFactor;
+
+      cursorElement.style.left = `${currentPos.current.x}px`;
+      cursorElement.style.top = `${currentPos.current.y}px`;
+
+      animationFrameId.current = requestAnimationFrame(animateCursor);
+    };
+
+    animateCursor();
+
+    return () => {
+      if (heroElement) {
+        heroElement.removeEventListener("mousemove", handleMouseMove);
+      }
+      cancelAnimationFrame(animationFrameId.current);
+    };
   }, []);
 
   return (
-<section className="pt-40 pb-20 px-4">
-  <div className="container mx-auto text-center">
-    <h1 className="text-5xl md:text-8xl lg:text-[105px] pb-6 gradient-title">
-      Manage Your Finances <br /> with Intelligence
-    </h1>
-    <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-      An AI-powered financial management platform that helps you track,
-      analyze, and optimize your spending with real-time insights.
-    </p>
-    <div className="flex justify-center space-x-4">
-      <Link href="/dashboard">
-        <Button size="lg" className="px-8">
-          Get Started
-        </Button>
-      </Link>
-      <Link href="https://www.youtube.com/roadsidecoder">
-        <Button size="lg" variant="outline" className="px-8">
-          Watch Demo
-        </Button>
-      </Link>
-    </div>
-<div className="hero-image-wrapper mt-5 md:mt-0">
-  <div ref={imageRef} className="hero-image">
-    <Image
-      src="/banner.jpeg"
-      width={1280}
-      height={720}
-      alt="Dashboard Preview"
-      className="rounded-lg shadow-2xl border mx-auto"
-      priority
-    />
-  </div>
-    </div>
-  </div>
-</section>
+    <section
+      onMouseOver={() => setShowCursor(true)}
+      onMouseLeave={() => setShowCursor(false)}
+      ref={heroRef}
+      className={`relative pt-40 pb-20 px-4`}
+    >
+      <div
+        ref={cursorRef}
+        className={`absolute w-6 h-6 rounded-full bg-white mix-blend-difference ${
+          showCursor ? "" : "hidden"
+        }`}
+      ></div>
+      <div className="container mx-auto text-center">
+        <h1 className="text-5xl md:text-8xl lg:text-[105px] pb-6 gradient-title">
+          Manage Your Finances <br /> with Intelligence
+        </h1>
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          An AI-driven financial management platform designed to help you
+          monitor, evaluate, and improve your spending with real-time insights.
+        </p>
+        <div>
+          <Link href="/dashboard">
+            <Button size="lg" className="px-10 text-lg">
+              Get Started
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 };
 
