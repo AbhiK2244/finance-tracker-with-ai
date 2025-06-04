@@ -12,6 +12,9 @@ const useFetch = (cb) => {
 
     try {
       const response = await cb(...args);
+      if(!response.success){
+        throw new Error(response.error);
+      }
       setData(response);
       setError(null);
     } catch (error) {

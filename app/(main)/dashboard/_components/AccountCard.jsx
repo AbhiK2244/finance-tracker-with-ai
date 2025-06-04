@@ -1,6 +1,6 @@
 "use client";
 
-import { updateDefaultAccount } from "@/actions/account";
+import { deleteAccount, updateDefaultAccount } from "@/actions/account";
 import {
   Card,
   CardContent,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import useFetch from "@/hooks/use-fetch";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, CircleMinus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -24,6 +24,13 @@ const AccountCard = ({ account }) => {
     data: updatedAccount,
     error,
   } = useFetch(updateDefaultAccount);
+
+  const {
+    loading: deleteAccountLoading,
+    fn: deleteAccountFn,
+    data: deletedAccount,
+    error: deleteAcountError,
+  } = useFetch(deleteAccount);
 
   const handleDefaultChange = async (event) => {
     event.preventDefault(); // Prevent navigation
@@ -40,13 +47,33 @@ const AccountCard = ({ account }) => {
     if (updatedAccount?.success) {
       toast.success("Default account updated successfully");
     }
-  }, [updatedAccount]);
+
+    if(deletedAccount?.success){
+      toast.success("Deleted account successfully.")
+    }
+  }, [updatedAccount, deletedAccount]);
 
   useEffect(() => {
     if (error) {
       toast.error(error.message || "Failed to update default account");
     }
+    if (deleteAcountError) {
+      toast.error(error.message || "Failed to delete the account");
+    }
   }, [error]);
+
+  const handleDeleteAccount = async(event, accountId) => {
+    event.preventDefault();
+
+    if (
+      !window.confirm(
+        `Are you sure you want to delete the account? This action will delete all the transactions associated with this account.`
+      )
+    )
+      return;
+
+    deleteAccountFn(accountId);
+  };
 
   return (
     <Card className="hover:shadow-md transition-shadow group relative">
@@ -55,10 +82,14 @@ const AccountCard = ({ account }) => {
           <CardTitle className="text-sm font-medium capitalize">
             {name}
           </CardTitle>
-          <Switch checked={isDefault}
-            onClick={handleDefaultChange}
-            disabled={updateDefaultLoading}
-          />
+          <div className="flex gap-4 items-center">
+            <Switch
+              checked={isDefault}
+              onClick={handleDefaultChange}
+              disabled={updateDefaultLoading}
+            />
+           { deleteAccountLoading? <Loader2 className="h-5 w-5 animate-spin" /> : <CircleMinus onClick={(e) => handleDeleteAccount(e, id)} className="h-5 w-5 text-red-500" />}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">

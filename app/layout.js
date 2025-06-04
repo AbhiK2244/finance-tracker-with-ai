@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
 
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.className}`}
       >
@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         {/* footer  */}
         <footer className="bg-blue-50 py-12">
           <div className="container mx-auto px-4 text-center text-gray-600">
-            <p>Shubham . Bibek . Abnish . Bir . Nitish . Abhishek</p>
+            <p>Abhishek Kamati</p>
           </div>
         </footer>
       </body>

@@ -66,31 +66,30 @@ export async function getAccountWithTransactions(accountId) {
     }
 
     const account = await db.account.findUnique({
-        where: {
-            id : accountId,
-            userId: user.id,
+      where: {
+        id: accountId,
+        userId: user.id,
+      },
+      include: {
+        transactions: {
+          orderBy: { date: "desc" },
         },
-        include: {
-            transactions: {
-                orderBy: { date: "desc" }
-            },
-            _count : {
-                select: { transactions : true},
-            },
+        _count: {
+          select: { transactions: true },
         },
+      },
     });
 
-    if(!account) return null;
+    if (!account) return null;
 
     return {
-        ...serializeTransaction(account),
-        transactions: account.transactions.map(serializeTransaction),
-    }
+      ...serializeTransaction(account),
+      transactions: account.transactions.map(serializeTransaction),
+    };
   } catch (error) {
     throw new Error(error.message);
   }
 }
-
 
 export async function bulkDeleteTransactions(transactionIds) {
   try {
@@ -118,10 +117,10 @@ export async function bulkDeleteTransactions(transactionIds) {
         transaction.type === "EXPENSE"
           ? transaction.amount
           : -transaction.amount;
-      acc[transaction.accountId] = (acc[transaction.accountId] || 0) + parseFloat(change);
+      acc[transaction.accountId] =
+        (acc[transaction.accountId] || 0) + parseFloat(change);
       return acc;
     }, {});
-
 
     // Delete transactions and update account balances in a transaction
     // this $transaction() is from prisma
@@ -151,6 +150,60 @@ export async function bulkDeleteTransactions(transactionIds) {
 
     revalidatePath("/dashboard");
     revalidatePath("/account/[id]");
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteAccount(accountId) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    const account = await db.account.findFirst({
+      where: {
+        id: accountId,
+        userId: user.id,
+      },
+      include: {
+        transactions: true,
+      },
+    });
+
+
+    if (!account) throw new Error("Account not found");
+
+    // if the account is default then user cannot delete the account
+    if (account.isDefault) {
+      return { success: false, error: "Default account cannot be deleted." };
+    }
+
+    await db.$transaction(async (tx) => {
+      // Delete transactions first
+      await tx.transaction.deleteMany({
+        where: {
+          accountId: account.id,
+          userId: user.id,
+        },
+      });
+
+      // Delete the account
+      await tx.account.delete({
+        where: {
+          id: account.id,
+        },
+      });
+    });
+
+    revalidatePath("/dashboard");
 
     return { success: true };
   } catch (error) {
